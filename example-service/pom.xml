@@ -7,6 +7,7 @@
 
     <groupId>com.johnruiz.examples</groupId>
     <artifactId>spring-boot-example-service</artifactId>
+    <description>An example service that uses Spring Boot</description>
 
     <parent>
         <groupId>com.johnruiz.examples</groupId>
@@ -76,6 +77,21 @@
     </dependencies>
 
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.1</version>
+                <configuration>
+                    <show>public</show>
+                    <nohelp>false</nohelp>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+
     <build>
         <plugins>
             <plugin>
@@ -89,6 +105,54 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.stratio.mojo.unix</groupId>
+                <artifactId>unix-maven-plugin</artifactId>
+                <version>1.0-alpha-9</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <contact>John Ruiz</contact>
+                    <contactEmail>jruiz@johnruiz.com</contactEmail>
+                    <deb>
+                        <section>java</section>
+                        <priority>extra</priority>
+                    </deb>
+                    <assembly>
+                        <makeDirectory>
+                            <paths>
+                                <path>/usr/lib/spring-boot-example</path>
+                                <path>/var/log/spring-boot-example</path>
+                            </paths>
+                            <attributes>
+                                <user>root</user>
+                                <group>root</group>
+                            </attributes>
+                        </makeDirectory>
+                        <copyFile>
+                            <path>target/spring-boot-example-service-1.0.0-SNAPSHOT.jar</path>
+                            <toFile>/usr/lib/spring-boot-example/spring-boot-example-service-1.0.0-SNAPSHOT.jar</toFile>
+                            <attributes>
+                                <user>root</user>
+                                <group>root</group>
+                                <mode>644</mode>
+                            </attributes>
+                        </copyFile>
+                        <copyFile>
+                            <path>src/main/unix/scripts/spring-boot-example.sh</path>
+                            <toFile>/usr/lib/spring-boot-example/spring-boot-example.sh</toFile>
+                            <attributes>
+                                <user>root</user>
+                                <group>root</group>
+                                <mode>644</mode>
+                            </attributes>
+                        </copyFile>
+                        <symlink>
+                            <path>/etc/init.d/spring-boot-example</path>
+                            <value>/usr/lib/spring-boot-example/spring-boot-example.sh</value>
+                        </symlink>
+                    </assembly>
+                </configuration>
             </plugin>
         </plugins>
     </build>
